@@ -15,12 +15,12 @@ tasks = {}
 for i in range(int(num_tasks)):
     st.write(f"### Görev {i+1}")
 
-    # Görev bilgileri inputları
-    task_name = st.text_input(f"Task {i+1} Adı")
-    task_duration = st.number_input(f"Süresi (gün)", min_value=1)
-    task_cost = st.number_input(f"Maliyeti ($)", min_value=1)
+    # Görev bilgileri inputları - her input için benzersiz key oluşturuyoruz
+    task_name = st.text_input(f"Task {i+1} Adı", key=f"task_name_{i}")
+    task_duration = st.number_input(f"Süresi (gün)", min_value=1, key=f"task_duration_{i}")
+    task_cost = st.number_input(f"Maliyeti ($)", min_value=1, key=f"task_cost_{i}")
     dependencies = st.text_input(
-        f"Bağımlılıklar (Virgülle ayırın, örn: Task2, Task3)"
+        f"Bağımlılıklar (Virgülle ayırın, örn: Task2, Task3)", key=f"task_deps_{i}"
     )
 
     # Eğer tüm bilgiler sağlanmışsa, sözlüğe ekleyelim
@@ -39,7 +39,7 @@ if st.button('Optimize Et'):
     def project_scheduling(tasks):
         G = nx.DiGraph()
 
-        # Grafik oluşturuyoruz ve bağlılıkları ekliyoruz
+        # Grafik oluşturuyoruz ve bağlılıkları ekleyiyoruz
         for task in tasks:
             G.add_node(task)
 
@@ -59,5 +59,4 @@ if st.button('Optimize Et'):
         except nx.NetworkXUnfeasible:
             st.write("Bağımlılık grafiği döngü içeriyor, sıralama yapılamıyor.")
 
-    # Burada tüm verileri sıralayıp sıralama fonksiyonunu çağırıyoruz
     project_scheduling(tasks)
